@@ -5,7 +5,7 @@ using System.Numerics;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
-namespace AmogusModels.Patches
+namespace CreatureModels.Patches
 {
     [HarmonyPatch]
     internal class PlayerObjects
@@ -18,7 +18,7 @@ namespace AmogusModels.Patches
             foreach (var player in players)
             {
                 if (player == localPlayer) continue;
-                player.gameObject.AddComponent<AmogusController>();
+                player.gameObject.AddComponent<CreatureController>();
             }
         }
 
@@ -29,6 +29,29 @@ namespace AmogusModels.Patches
             InitModels();
         }
 
+        
+        //Outfits
+        [HarmonyPatch(typeof(UnlockableSuit))]
+        internal class UnlockableSuitPatch
+        {
+            [HarmonyPatch("SwitchSuitForPlayer")]
+            [HarmonyPrefix]
+            static void SwitchSuitForPlayerPatch(ref UnlockableSuit __instance, PlayerControllerB player, int suitID, bool playAudio = true)
+            {
+                string texName = StartOfRound.Instance.unlockablesList.unlockables[suitID].unlockableName; // ex: "Green suit"
+                Texture tex = (Texture)BundleLoader.assets["ASSETS/" + texName + ".PNG"];
+
+                SkinnedMeshRenderer[] meshes = player.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>();
+
+                foreach (SkinnedMeshRenderer mesh in meshes)
+                {
+                    mesh.materials[0].SetTexture("_BaseColorMap", tex);
+                }
+            }
+        }
+
+
+        // Hides the vanilla player
         [HarmonyPatch(typeof(PlayerControllerB), "DisablePlayerModel")]
         [HarmonyPostfix] 
         public static void DisablePlayerModel(ref PlayerControllerB __instance, GameObject playerObject)
@@ -42,6 +65,7 @@ namespace AmogusModels.Patches
                 if (LODmesh.name == "Body") continue;
                 LODmesh.enabled = false;
             }
+
         }
     }
 }

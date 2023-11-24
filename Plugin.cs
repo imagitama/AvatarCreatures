@@ -9,7 +9,7 @@ using Unity.Netcode;
 using System;
 using System.Runtime.CompilerServices;
 
-namespace AmogusModels 
+namespace CreatureModels 
 {
     [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
     public class Plugin : BaseUnityPlugin
@@ -19,7 +19,7 @@ namespace AmogusModels
         {
             _harmony = new Harmony(PluginInfo.PLUGIN_GUID);
             _harmony.PatchAll();
-            Logger.LogInfo("Amogus 1");
+            Logger.LogInfo("HyenaNoises");
             Logger.LogInfo($"{PluginInfo.PLUGIN_GUID} loaded");
         }
     }

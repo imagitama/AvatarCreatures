@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace AmogusModels
+namespace CreatureModels
 {
     public class IKController : MonoBehaviour
     {
