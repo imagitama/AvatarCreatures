@@ -1,4 +1,6 @@
-# LethalCompanyCrewmatePlayerModel
-Changes the player model to among us crewmates
+# Lethal Creatures
+Changes the player to a custom model
 
-![](https://i.imgur.com/0Bn7TWE.png)
+![](https://i.imgur.com/vqXMhWe.png)
+
+Original code by Zoomy

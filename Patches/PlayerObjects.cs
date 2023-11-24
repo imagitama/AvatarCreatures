@@ -7,6 +7,7 @@ using Debug = UnityEngine.Debug;
 
 namespace CreatureModels.Patches
 {
+
     [HarmonyPatch]
     internal class PlayerObjects
     {
@@ -18,9 +19,10 @@ namespace CreatureModels.Patches
             foreach (var player in players)
             {
                 if (player == localPlayer) continue;
-                player.gameObject.AddComponent<CreatureController>();
+                player.gameObject.AddComponent<LethalCreature.CreatureController>();
             }
         }
+
 
         [HarmonyPatch(typeof(PlayerControllerB), "SpawnPlayerAnimation")]
         [HarmonyPostfix]
@@ -28,28 +30,6 @@ namespace CreatureModels.Patches
         {
             InitModels();
         }
-
-        
-        //Outfits
-        [HarmonyPatch(typeof(UnlockableSuit))]
-        internal class UnlockableSuitPatch
-        {
-            [HarmonyPatch("SwitchSuitForPlayer")]
-            [HarmonyPrefix]
-            static void SwitchSuitForPlayerPatch(ref UnlockableSuit __instance, PlayerControllerB player, int suitID, bool playAudio = true)
-            {
-                string texName = StartOfRound.Instance.unlockablesList.unlockables[suitID].unlockableName; // ex: "Green suit"
-                Texture tex = (Texture)BundleLoader.assets["ASSETS/" + texName + ".PNG"];
-
-                SkinnedMeshRenderer[] meshes = player.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>();
-
-                foreach (SkinnedMeshRenderer mesh in meshes)
-                {
-                    mesh.materials[0].SetTexture("_BaseColorMap", tex);
-                }
-            }
-        }
-
 
         // Hides the vanilla player
         [HarmonyPatch(typeof(PlayerControllerB), "DisablePlayerModel")]
@@ -68,4 +48,44 @@ namespace CreatureModels.Patches
 
         }
     }
+
+    //Outfits
+    [HarmonyPatch(typeof(UnlockableSuit))]
+    internal class UnlockableSuitPatch
+    {
+        [HarmonyPatch("SwitchSuitForPlayer")]
+        [HarmonyPrefix]
+        static void SwitchSuitForPlayerPatch(ref UnlockableSuit __instance, PlayerControllerB player, int suitID, bool playAudio = true)
+        {
+            Texture tex;
+            switch (suitID)
+            {
+                case 0:
+                    tex = LethalCreature.CreatureController.TexBase01;
+                    break;
+                case 1:
+                    tex = LethalCreature.CreatureController.TexBase02;
+                    break;
+                case 2:
+                    tex = LethalCreature.CreatureController.TexBase03;
+                    break;
+                case 3:
+                    tex = LethalCreature.CreatureController.TexBase04;
+                    break;
+                default:
+                    tex = LethalCreature.CreatureController.TexBase01;
+                    break;
+            }
+
+            SkinnedMeshRenderer[] meshes = player.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>();
+
+            Debug.Log("Looking for meshes...");
+            foreach (SkinnedMeshRenderer mesh in meshes)
+            {
+                Debug.Log("Found a mesh: " + mesh.name);
+                mesh.materials[0].SetTexture("_BaseColorMap", tex);
+            }
+        }
+    }
+
 }
