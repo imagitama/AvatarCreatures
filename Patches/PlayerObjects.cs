@@ -55,7 +55,7 @@ namespace CreatureModels.Patches
     {
         [HarmonyPatch("SwitchSuitForPlayer")]
         [HarmonyPrefix]
-        static void SwitchSuitForPlayerPatch(ref UnlockableSuit __instance, PlayerControllerB player, int suitID, bool playAudio = true)
+        static void SwitchSuitForPlayerPatch(PlayerControllerB player, int suitID, bool playAudio = true)
         {
             Texture tex;
             switch (suitID)
