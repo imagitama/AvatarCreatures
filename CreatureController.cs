@@ -60,6 +60,7 @@ namespace CreatureModels
                 mesh.materials[0].EnableKeyword("_SPECGLOSSMAP");
                 mesh.materials[0].EnableKeyword("_NORMALMAP");
 
+                mesh.materials[0].SetTexture("_BaseColorMap", TexBase01);
                 mesh.materials[0].SetTexture("_SpecularColorMap", TexSpec);
                 mesh.materials[0].SetFloat("_Smoothness", .30f);
                 mesh.materials[0].SetTexture("_EmissiveColorMap", TexEmit);
