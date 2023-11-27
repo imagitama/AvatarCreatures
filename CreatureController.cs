@@ -25,17 +25,18 @@ namespace CreatureModels
 
                 //Assetbundle Commune//========
 
-                GameObject lethalyeen = (GameObject)LC_API.BundleAPI.BundleLoader.assets["ASSETS/LETHALCREATURE.FBX"];
+                GameObject lethalyeen = LC_API.BundleAPI.BundleLoader.GetLoadedAsset<GameObject>("assets/lethalcreature.fbx");
 
-                TexBase01 = (Texture)LC_API.BundleAPI.BundleLoader.assets["ASSETS/TEXTURES/LCRED.PNG"];
-                TexBase02 = (Texture)LC_API.BundleAPI.BundleLoader.assets["ASSETS/TEXTURES/LCGREEN.PNG"];
-                TexBase03 = (Texture)LC_API.BundleAPI.BundleLoader.assets["ASSETS/TEXTURES/LCHAZARD.PNG"];
-                TexBase04 = (Texture)LC_API.BundleAPI.BundleLoader.assets["ASSETS/TEXTURES/LCPAJAMA.PNG"];
+                TexBase01 = LC_API.BundleAPI.BundleLoader.GetLoadedAsset<Texture>("assets/textures/lcred.png");
+                TexBase02 = LC_API.BundleAPI.BundleLoader.GetLoadedAsset<Texture>("assets/textures/lcgreen.png");
+                TexBase03 = LC_API.BundleAPI.BundleLoader.GetLoadedAsset<Texture>("assets/textures/lchazard.png");
+                TexBase04 = LC_API.BundleAPI.BundleLoader.GetLoadedAsset<Texture>("assets/textures/lcpajama.png");
 
-                Texture TexSpec = (Texture)LC_API.BundleAPI.BundleLoader.assets["ASSETS/TEXTURES/CREATURE_SPEC.PNG"];
-                Texture TexEmit = (Texture)LC_API.BundleAPI.BundleLoader.assets["ASSETS/TEXTURES/CREATURE_EMIT.PNG"];
-                Texture TexNorm = (Texture)LC_API.BundleAPI.BundleLoader.assets["ASSETS/TEXTURES/CREATURE_NORM.PNG"];
-                RuntimeAnimatorController animController = (RuntimeAnimatorController)LC_API.BundleAPI.BundleLoader.assets["ASSETS/CRITTERCONTROL.CONTROLLER"];
+                Texture TexSpec = LC_API.BundleAPI.BundleLoader.GetLoadedAsset<Texture>("assets/textures/creature_spec.png");
+                Texture TexEmit = LC_API.BundleAPI.BundleLoader.GetLoadedAsset<Texture>("assets/textures/creature_emt.png");
+                Texture TexNorm = LC_API.BundleAPI.BundleLoader.GetLoadedAsset<Texture>("assets/textures/creature_norm.png");
+
+                RuntimeAnimatorController animController = LC_API.BundleAPI.BundleLoader.GetLoadedAsset<RuntimeAnimatorController>("assets/creaturecontrol.controller");
 
                 //=================
                 //Scaling//========

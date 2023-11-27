@@ -2,6 +2,7 @@ using GameNetcodeStuff;
 using HarmonyLib;
 using System.Diagnostics;
 using System.Numerics;
+using System.Linq;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
@@ -18,8 +19,16 @@ namespace CreatureModels.Patches
             var players = UnityEngine.Object.FindObjectsOfType<PlayerControllerB>();
             foreach (var player in players)
             {
-                if (player == localPlayer) continue;
-                player.gameObject.AddComponent<LethalCreature.CreatureController>();
+                if (player == localPlayer)
+                {
+
+                }
+                else
+                {
+                    var Creature = player.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>().ToList().Find(x => x.name.Contains("Body"));
+                    if (player != null) continue;
+                    player.gameObject.AddComponent<LethalCreature.CreatureController>();
+                }
             }
         }
 
