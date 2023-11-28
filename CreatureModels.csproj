@@ -17,6 +17,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="CreatureControllerH.cs" />
+    <Compile Remove="HelperClasses\AssetHandler.cs" />
+    <Compile Remove="HelperClasses\MaterialAssembler.cs" />
+    <Compile Remove="HelperClasses\Utilities.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="CreatureControllerH.cs" />
+    <None Include="HelperClasses\AssetHandler.cs" />
+    <None Include="HelperClasses\MaterialAssembler.cs" />
+    <None Include="HelperClasses\Utilities.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
     <PackageReference Include="BepInEx.Core" Version="5.*" />
     <PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />

@@ -26,7 +26,7 @@ namespace CreatureModels.Patches
                 else
                 {
                     var Creature = player.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>().ToList().Find(x => x.name.Contains("Body"));
-                    if (player != null) continue;
+                    if (Creature != null) continue;
                     player.gameObject.AddComponent<LethalCreature.CreatureController>();
                 }
             }
