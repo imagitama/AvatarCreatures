@@ -129,6 +129,7 @@ namespace CreatureModels
                         material.SetFloat("_Smoothness", .30f);
                         material.SetTexture("_EmissiveColorMap", emissionTexture);
                         material.SetTexture("_BumpMap", normalTexture);
+                        // assume the shader does this for us
                         // material.SetColor("_EmissiveColor", new Color(50, 50, 50));
 
                         HDMaterial.ValidateMaterial(material);

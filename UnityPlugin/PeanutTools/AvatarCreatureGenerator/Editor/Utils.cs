@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
+using Microsoft.Win32;
 
 namespace PeanutTools_AvatarCreatureGenerator {
     public class Utils {
@@ -213,6 +214,58 @@ namespace PeanutTools_AvatarCreatureGenerator {
                 Debug.LogError($"Failed to load AssetBundle '{pathToAssetBundle}'");
                 return -1;
             }
+        }
+
+        public static bool GetIsSteamGameInstalled(string steamAppID)
+        {
+            try
+            {
+                // Open the Steam registry key
+                using (RegistryKey steamKey = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Valve\Steam"))
+                {
+                    if (steamKey != null)
+                    {
+                        // Get the Steam installation path
+                        string steamPath = steamKey.GetValue("InstallPath") as string;
+
+                        // HKEY_CURRENT_USER\SOFTWARE\Valve\Steam\Apps\1966720
+                        string gameKeyPath = $@"SOFTWARE\Valve\Steam\Apps\{steamAppID}";
+
+                        Debug.Log(gameKeyPath);
+
+                        // Open the registry key for the game
+                        using (RegistryKey gameKey = Registry.CurrentUser.OpenSubKey(gameKeyPath))
+                        {
+                            Debug.Log(gameKey);
+
+                            if (gameKey != null)
+                            {
+                                Debug.Log(gameKey.GetValue("Installed"));
+
+                                // Check if the game is installed
+                                if (Convert.ToInt32(gameKey.GetValue("Installed")) == 1)
+                                {
+                                    // // Get the game's installation folder relative to the Steam path
+                                    // string installFolder = gameKey.GetValue("InstallDir") as string;
+
+                                    // // Combine the Steam path and the game's install folder to get the absolute path
+                                    // string installPath = System.IO.Path.Combine(steamPath, "steamapps", "common", installFolder);
+
+                                    // return installPath;
+
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+
+            return false;
         }
     }
 }

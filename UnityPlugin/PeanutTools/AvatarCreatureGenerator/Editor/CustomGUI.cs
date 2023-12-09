@@ -117,6 +117,10 @@ namespace PeanutTools_AvatarCreatureGenerator {
             return EditorGUILayout.IntField(label, value);
         }
 
+        public static long LongInput(string label, long value) {
+            return EditorGUILayout.LongField(label, value);
+        }
+
         public static string RenderAssetFolderSelector(ref string pathToUse) {
             GUILayout.Label("Path:");
             pathToUse = EditorGUILayout.TextField(pathToUse);

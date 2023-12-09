@@ -12,11 +12,14 @@ namespace CreatureModels.Patches
         {
             var localPlayer = GameNetworkManager.Instance.localPlayerController;
             var players = Object.FindObjectsOfType<PlayerControllerB>();
+
+            // dev only flag for forcing the player's local model
+            // note if set to false the game will render the default model AND the custom one in 1st person mode
             bool ignoreLocalPlayer = true;
+
             foreach (var player in players)
             {
-                // TODO: Display custom avatar in 3rd person mods but not in 1st person (hands dont line up)
-                if (player == localPlayer && ignoreLocalPlayer != true)
+                if (player == localPlayer && ignoreLocalPlayer == true)
                 {
                     Debug.Log($"Ignoring local player (steam ID {player.playerSteamId})");
                 }
