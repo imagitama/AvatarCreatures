@@ -1,33 +1,37 @@
 using GameNetcodeStuff;
 using HarmonyLib;
-using System.Diagnostics;
-using System.Numerics;
-using System.Linq;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
+using static CreatureModels.AvatarCreature;
 
 namespace CreatureModels.Patches
 {
-
     [HarmonyPatch]
     internal class PlayerObjects
     {
         public static void InitModels()
         {
             var localPlayer = GameNetworkManager.Instance.localPlayerController;
-            Debug.Log(localPlayer.gameObject.name);
-            var players = UnityEngine.Object.FindObjectsOfType<PlayerControllerB>();
+            var players = Object.FindObjectsOfType<PlayerControllerB>();
+            bool ignoreLocalPlayer = true;
             foreach (var player in players)
             {
-                if (player == localPlayer)
+                // TODO: Display custom avatar in 3rd person mods but not in 1st person (hands dont line up)
+                if (player == localPlayer && ignoreLocalPlayer != true)
                 {
-
+                    Debug.Log($"Ignoring local player (steam ID {player.playerSteamId})");
                 }
                 else
                 {
-                    var Creature = player.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>().ToList().Find(x => x.name.Contains("Body"));
-                    if (Creature != null) continue;
-                    player.gameObject.AddComponent<LethalCreature.CreatureController>();
+                    var Creature = player.gameObject.GetComponentsInChildren<CreatureController>();
+                    if (Creature.Length > 0)
+                    {
+                        Debug.Log($"Steam ID {player.playerSteamId} already has creature, skipping");
+                        continue;
+                    }
+
+                    Debug.Log($"Adding creature to steam ID {player.playerSteamId}");
+
+                    player.gameObject.AddComponent<CreatureController>();
                 }
             }
         }
@@ -66,10 +70,10 @@ namespace CreatureModels.Patches
         [HarmonyPrefix]
         static void SwitchSuitForPlayerPatch(PlayerControllerB player, int suitID, bool playAudio = true)
         {
-            Texture tex;
+/*            Texture tex;
             switch (suitID)
             {
-                case 0:
+ *//*               case 0:
                     tex = LethalCreature.CreatureController.TexBase01;
                     break;
                 case 1:
@@ -80,9 +84,9 @@ namespace CreatureModels.Patches
                     break;
                 case 3:
                     tex = LethalCreature.CreatureController.TexBase04;
-                    break;
+                    break;*//*
                 default:
-                    tex = LethalCreature.CreatureController.TexBase01;
+                    tex = AvatarCreature.CreatureController.albedoTexture;
                     break;
             }
 
@@ -93,7 +97,7 @@ namespace CreatureModels.Patches
             {
                 Debug.Log("Found a mesh: " + mesh.name);
                 mesh.materials[0].SetTexture("_BaseColorMap", tex);
-            }
+            }*/
         }
     }
 

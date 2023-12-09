@@ -1,13 +1,5 @@
 using BepInEx;
 using HarmonyLib;
-using System.Reflection;
-using LC_API;
-using GameNetcodeStuff;
-using UnityEngine;
-using UnityEngine.SceneManagement;
-using Unity.Netcode;
-using System;
-using System.Runtime.CompilerServices;
 
 namespace CreatureModels 
 {
@@ -19,7 +11,6 @@ namespace CreatureModels
         {
             _harmony = new Harmony(PluginInfo.PLUGIN_GUID);
             _harmony.PatchAll();
-            Logger.LogInfo("HyenaNoises");
             Logger.LogInfo($"{PluginInfo.PLUGIN_GUID} loaded");
         }
     }

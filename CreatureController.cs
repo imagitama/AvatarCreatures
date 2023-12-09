@@ -1,21 +1,42 @@
 using GameNetcodeStuff;
 using UnityEngine.Rendering.HighDefinition;
 using UnityEngine;
+using System.IO;
+using BepInEx;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using static UnityEngine.UIElements.UIR.Allocator2D;
+using static UnityEngine.UIElements.UxmlAttributeDescription;
+using UnityEngine.Profiling;
 
 namespace CreatureModels
 {
-    public class LethalCreature
+    public class AvatarCreature
     {
         public class CreatureController : MonoBehaviour
         {
-            public static Texture TexBase01;
-            public static Texture TexBase02;
-            public static Texture TexBase03;
-            public static Texture TexBase04;
+            GameObject currentAvatar = null;
+            Transform spineBoneForRotation = null;
+            Transform chestBone = null;
 
-            GameObject lethalyeenObj = null;
             void Start()
             {
+                var playerController = gameObject.GetComponent<PlayerControllerB>();
+
+                var rig = gameObject.transform.Find("ScavengerModel").Find("metarig");
+                spineBoneForRotation = rig.Find("spine").Find("spine.001").Find("spine.002").Find("spine.003");
+
+                if (spineBoneForRotation == null)
+                {
+                    throw new Exception("ScavengerModel is missing a spine bone");
+                }
+
+                // seems to be 0 when local
+                var steamId = playerController.playerSteamId;
+
+                Debug.Log($"Loading model for player '{steamId}'...");
+
                 gameObject.GetComponentInChildren<LODGroup>().enabled = false;
                 var meshes = gameObject.GetComponentsInChildren<SkinnedMeshRenderer>();
                 foreach (var LODmesh in meshes)
@@ -24,59 +45,120 @@ namespace CreatureModels
                 }
 
                 //Assetbundle Commune//========
+                string pathToAvatars = Path.Combine(BepInEx.Paths.GameRootPath, "Avatars");
+                string pathToAvatar = Path.Combine(pathToAvatars, steamId.ToString());
+                string pathToAssetBundle = $"{pathToAvatar}.assetbundle";
 
-                GameObject lethalyeen = LC_API.BundleAPI.BundleLoader.GetLoadedAsset<GameObject>("assets/lethalcreature.fbx");
+                AssetBundle assetBundle = AssetBundle.LoadFromFile(pathToAssetBundle);
 
-                TexBase01 = LC_API.BundleAPI.BundleLoader.GetLoadedAsset<Texture>("assets/textures/lcred.png");
-                TexBase02 = LC_API.BundleAPI.BundleLoader.GetLoadedAsset<Texture>("assets/textures/lcgreen.png");
-                TexBase03 = LC_API.BundleAPI.BundleLoader.GetLoadedAsset<Texture>("assets/textures/lchazard.png");
-                TexBase04 = LC_API.BundleAPI.BundleLoader.GetLoadedAsset<Texture>("assets/textures/lcpajama.png");
+                if (assetBundle == null)
+                {
+                    throw new Exception($"Error loading asset bundle '{pathToAssetBundle}' - null");
+                }
 
-                Texture TexSpec = LC_API.BundleAPI.BundleLoader.GetLoadedAsset<Texture>("assets/textures/creature_spec.png");
-                Texture TexEmit = LC_API.BundleAPI.BundleLoader.GetLoadedAsset<Texture>("assets/textures/creature_emt.png");
-                Texture TexNorm = LC_API.BundleAPI.BundleLoader.GetLoadedAsset<Texture>("assets/textures/creature_norm.png");
+                GameObject modelFbx = assetBundle.LoadAsset<GameObject>("model.fbx");
+
+                if (modelFbx == null)
+                {
+                    throw new Exception($"Model fbx not found inside bundle");
+                }
 
                 RuntimeAnimatorController animController = LC_API.BundleAPI.BundleLoader.GetLoadedAsset<RuntimeAnimatorController>("assets/creaturecontrol.controller");
 
+                if (animController == null)
+                {
+                    throw new Exception("Could not find controller in bundle");
+                }
+
+                Debug.Log("Creating avatar");
+
                 //=================
                 //Scaling//========
-                var newLethalyeen = Instantiate(lethalyeen);
-                newLethalyeen.transform.localScale = new Vector3(1, 1, 1);
-                var rig = gameObject.transform.Find("ScavengerModel").Find("metarig");
+                var newAvatar = Instantiate(modelFbx);
+                newAvatar.transform.localScale = new Vector3(1, 1, 1);
+
+                Debug.Log("Parenting avatar");
+
                 var spine = rig.Find("spine").Find("spine.001");
-                newLethalyeen.transform.SetParent(spine);
-                newLethalyeen.transform.localPosition = new Vector3(0, 0f, 0);
-                newLethalyeen.transform.localEulerAngles = Vector3.zero;
+                newAvatar.transform.SetParent(spine);
+
+                newAvatar.transform.localPosition = new Vector3(0, 0f, 0);
+                newAvatar.transform.localEulerAngles = Vector3.zero;
+
+                Debug.Log("Updating material");
 
                 var LOD1 = gameObject.GetComponent<PlayerControllerB>().thisPlayerModel;
                 var goodShader = LOD1.material.shader;
-                var mesh = newLethalyeen.GetComponentInChildren<SkinnedMeshRenderer>();
+                var renderers = newAvatar.GetComponentsInChildren<Renderer>();
 
                 //=================
                 //Materials and Textures//========
 
-                mesh.materials[0].shader = goodShader;
+                foreach (Renderer renderer in renderers)
+                {
+                    string rendererName = renderer.gameObject.name;
 
-                mesh.materials[0].EnableKeyword("_EMISSION");
-                mesh.materials[0].EnableKeyword("_SPECGLOSSMAP");
-                mesh.materials[0].EnableKeyword("_NORMALMAP");
+                    Debug.Log($"Updating {renderer.materials.Length} materials for renderer '{rendererName}'");
 
-                mesh.materials[0].SetTexture("_BaseColorMap", TexBase01);
-                mesh.materials[0].SetTexture("_SpecularColorMap", TexSpec);
-                mesh.materials[0].SetFloat("_Smoothness", .30f);
-                mesh.materials[0].SetTexture("_EmissiveColorMap", TexEmit);
-                mesh.materials[0].SetTexture("_BumpMap", TexNorm);
-                mesh.materials[0].SetColor("_EmissiveColor", Color.white);
+                    int idx = 0;
 
-                HDMaterial.ValidateMaterial(mesh.materials[0]);
+                    foreach (Material material in renderer.materials)
+                    {
+                        Debug.Log($"Applying textures to material #{idx} - '{material.name}'");
 
+                        material.shader = goodShader;
+
+                        material.EnableKeyword("_EMISSION");
+                        material.EnableKeyword("_SPECGLOSSMAP");
+                        material.EnableKeyword("_NORMALMAP");
+
+                        string albedoName = $"{rendererName}_{idx}_Albedo.png";
+
+                        Texture albedoTexture = assetBundle.LoadAsset<Texture>(albedoName);
+                        Texture smoothnessTexture = assetBundle.LoadAsset<Texture>($"{rendererName}_{idx}_Smoothness.png");
+                        Texture emissionTexture = assetBundle.LoadAsset<Texture>($"{rendererName}_{idx}_Emission.png");
+                        Texture normalTexture = assetBundle.LoadAsset<Texture>($"{rendererName}_{idx}_Normal.png");
+
+                        if (albedoTexture == null)
+                        {
+                            throw new Exception($"Could not find asset '{albedoName}' in asset bundle");
+                        }
+
+                        material.SetTexture("_BaseColorMap", albedoTexture);
+                        material.SetTexture("_SpecularColorMap", smoothnessTexture);
+                        material.SetFloat("_Smoothness", .30f);
+                        material.SetTexture("_EmissiveColorMap", emissionTexture);
+                        material.SetTexture("_BumpMap", normalTexture);
+                        // material.SetColor("_EmissiveColor", new Color(50, 50, 50));
+
+                        HDMaterial.ValidateMaterial(material);
+
+                        idx++;
+                    }
+                }
 
                 //=================
                 //Dark magik IK voodoo//========
 
-                var anim = newLethalyeen.GetComponentInChildren<Animator>();
-                anim.runtimeAnimatorController = animController;
-                var ikController = newLethalyeen.AddComponent<IKController>();
+                // assumes you bundled your FBX with a humanoid avatar
+                var animator = newAvatar.GetComponentInChildren<Animator>();
+
+                Debug.Log("Storing chest bone");
+
+                chestBone = animator.GetBoneTransform(HumanBodyBones.Chest);
+
+                if (chestBone == null)
+                {
+                    throw new Exception("Avatar is missing a chest bone");
+                }
+
+                Debug.Log("Inserting controller");
+
+                animator.runtimeAnimatorController = animController;
+
+                Debug.Log("Setting up IK");
+
+                var ikController = newAvatar.AddComponent<IKController>();
                 var lthigh = rig.Find("spine").Find("thigh.L");
                 var rthigh = rig.Find("spine").Find("thigh.R");
                 var lshin = lthigh.Find("shin.L");
@@ -115,17 +197,22 @@ namespace CreatureModels
                 ikController.rightHandTarget = rHandOffset.transform;
                 ikController.ikActive = true;
 
-                lethalyeenObj = newLethalyeen;
+                Debug.Log("IK set up");
+
+                assetBundle.Unload(false);
+
+                Debug.Log("Avatar has been loaded");
+
+                currentAvatar = newAvatar;
             }
 
             private void LateUpdate()
             {
-                if (lethalyeenObj != null)
+                if (currentAvatar != null && chestBone != null && spineBoneForRotation != null)
                 {
-                    lethalyeenObj.transform.localPosition = new Vector3(0, -0.15f, 0);
-                    var rig = gameObject.transform.Find("ScavengerModel").Find("metarig");
-                    var trans = rig.Find("spine").Find("spine.001").Find("spine.002").Find("spine.003");
-                    lethalyeenObj.transform.Find("Armature").Find("Hips").Find("Spine").Find("Chest").localEulerAngles = trans.localEulerAngles;
+                    currentAvatar.transform.localPosition = new Vector3(0, -0.15f, 0);
+                    // currentAvatar.transform.Find("Armature").Find("Hips").Find("Spine").Find("Chest").localEulerAngles = trans.localEulerAngles;
+                    chestBone.localEulerAngles = spineBoneForRotation.localEulerAngles;
                 }
 
             }
