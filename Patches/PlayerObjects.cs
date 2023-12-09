@@ -19,13 +19,14 @@ namespace CreatureModels.Patches
 
             foreach (var player in players)
             {
-                if (player == localPlayer && ignoreLocalPlayer == true)
+                if ((player == localPlayer || player.playerSteamId == 0) && ignoreLocalPlayer == true)
                 {
                     Debug.Log($"Ignoring local player (steam ID {player.playerSteamId})");
                 }
                 else
                 {
                     var Creature = player.gameObject.GetComponentsInChildren<CreatureController>();
+
                     if (Creature.Length > 0)
                     {
                         Debug.Log($"Steam ID {player.playerSteamId} already has creature, skipping");

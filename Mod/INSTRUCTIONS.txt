@@ -1,0 +1,32 @@
+USING THE MOD
+
+1. in thunderstore go to Settings => Import local mod => select PeanutBuddha-AvatarCreators-X.X.X.zip
+
+2. in steamapps/common/Lethal Company make a folder Avatars and place all of the assetbundles in there
+
+3. launch game!
+
+
+
+-----
+
+
+
+
+CREATING AN ASSETBUNDLE FOR YOUR AVATAR
+
+1. copy your unity project
+
+2. import .unitypackage inside the mod ZIP
+
+3. go to PeanutTools -> AvatarCreature Generator
+
+4. drag avatar into the slot
+
+5. paste your steam ID
+
+6. enter in the path to your steamapps/common/Lethal Company folder
+
+7. click Generate
+
+8. send your assetbundle inside steamapps/common/Lethal Company/STEAMID.assetbundle to your friends :)

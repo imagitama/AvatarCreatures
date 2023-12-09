@@ -63,11 +63,16 @@ namespace CreatureModels
                     throw new Exception($"Model fbx not found inside bundle");
                 }
 
-                RuntimeAnimatorController animController = LC_API.BundleAPI.BundleLoader.GetLoadedAsset<RuntimeAnimatorController>("assets/creaturecontrol.controller");
+                RuntimeAnimatorController animController = LC_API.BundleAPI.BundleLoader.GetLoadedAsset<RuntimeAnimatorController>("assets/crittercontrol.controller");
 
                 if (animController == null)
                 {
-                    throw new Exception("Could not find controller in bundle");
+                    animController = LC_API.BundleAPI.BundleLoader.GetLoadedAsset<RuntimeAnimatorController>("assets/assets/crittercontrol.controller");
+
+                    if (animController == null)
+                    {
+                        throw new Exception("Could not find controller in bundle");
+                    }
                 }
 
                 Debug.Log("Creating avatar");
@@ -129,8 +134,11 @@ namespace CreatureModels
                         material.SetFloat("_Smoothness", .30f);
                         material.SetTexture("_EmissiveColorMap", emissionTexture);
                         material.SetTexture("_BumpMap", normalTexture);
-                        // assume the shader does this for us
-                        // material.SetColor("_EmissiveColor", new Color(50, 50, 50));
+
+                        // trust the user made their eyes only have emission
+                        if (emissionTexture != null) {
+                            material.SetColor("_EmissiveColor", Color.white);
+                        }
 
                         HDMaterial.ValidateMaterial(material);
 
