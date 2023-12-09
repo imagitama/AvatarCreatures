@@ -24,25 +24,10 @@ namespace CreatureModels
             {
                 var playerController = gameObject.GetComponent<PlayerControllerB>();
 
-                var rig = gameObject.transform.Find("ScavengerModel").Find("metarig");
-                spineBoneForRotation = rig.Find("spine").Find("spine.001").Find("spine.002").Find("spine.003");
-
-                if (spineBoneForRotation == null)
-                {
-                    throw new Exception("ScavengerModel is missing a spine bone");
-                }
-
                 // seems to be 0 when local
                 var steamId = playerController.playerSteamId;
 
                 Debug.Log($"Loading model for player '{steamId}'...");
-
-                gameObject.GetComponentInChildren<LODGroup>().enabled = false;
-                var meshes = gameObject.GetComponentsInChildren<SkinnedMeshRenderer>();
-                foreach (var LODmesh in meshes)
-                {
-                    LODmesh.enabled = false;
-                }
 
                 //Assetbundle Commune//========
                 string pathToAvatars = Path.Combine(BepInEx.Paths.GameRootPath, "Avatars");
@@ -53,7 +38,32 @@ namespace CreatureModels
 
                 if (assetBundle == null)
                 {
-                    throw new Exception($"Error loading asset bundle '{pathToAssetBundle}' - null");
+                    Debug.LogWarning($"Failed to load asset bundle '{pathToAssetBundle}' - does not exist, falling back to custom default");
+
+                    pathToAssetBundle = Path.Combine(pathToAvatars, $"default.assetbundle");
+
+                    assetBundle = AssetBundle.LoadFromFile(pathToAssetBundle);
+
+                    if (assetBundle == null)
+                    {
+                        Debug.LogWarning($"Failed to load default asset bundle '{pathToAssetBundle}' - does not exist, falling back to game default");
+                        return;
+                    }
+                }
+
+                var rig = gameObject.transform.Find("ScavengerModel").Find("metarig");
+                spineBoneForRotation = rig.Find("spine").Find("spine.001").Find("spine.002").Find("spine.003");
+
+                if (spineBoneForRotation == null)
+                {
+                    throw new Exception("ScavengerModel is missing a spine bone");
+                }
+
+                gameObject.GetComponentInChildren<LODGroup>().enabled = false;
+                var meshes = gameObject.GetComponentsInChildren<SkinnedMeshRenderer>();
+                foreach (var LODmesh in meshes)
+                {
+                    LODmesh.enabled = false;
                 }
 
                 GameObject modelFbx = assetBundle.LoadAsset<GameObject>("model.fbx");
@@ -158,7 +168,12 @@ namespace CreatureModels
 
                 if (chestBone == null)
                 {
-                    throw new Exception("Avatar is missing a chest bone");
+                    chestBone = animator.GetBoneTransform(HumanBodyBones.Spine);
+
+                    if (chestBone == null)
+                    {
+                        throw new Exception("Avatar is missing a chest or spine bone");
+                    }
                 }
 
                 Debug.Log("Inserting controller");

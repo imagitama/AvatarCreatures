@@ -475,3 +475,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+Mod/CreatureModels.dll
+Mod/CHANGELOG.md

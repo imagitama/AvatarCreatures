@@ -15,11 +15,12 @@ namespace CreatureModels.Patches
 
             // dev only flag for forcing the player's local model
             // note if set to false the game will render the default model AND the custom one in 1st person mode
-            bool ignoreLocalPlayer = true;
+            // TODO: Work out how to make this a mod setting (does Thunderstore have this?)
+            bool alwaysRenderLocalPlayerModel = false;
 
             foreach (var player in players)
             {
-                if ((player == localPlayer || player.playerSteamId == 0) && ignoreLocalPlayer == true)
+                if ((player == localPlayer || player.playerSteamId == 0) && alwaysRenderLocalPlayerModel != true)
                 {
                     Debug.Log($"Ignoring local player (steam ID {player.playerSteamId})");
                 }

@@ -51,6 +51,8 @@ NOTE: Include unity plugin with the mod to make it easier for people.
 
 1. Ensure the manifest file is up to date
 
-2. Compress everything in `C:/Users/<username>/AppData/Roaming/Thunderstore Mod Manager/DataFolder/LethalCompany/profiles/Default/BepInEx/plugins/PeanutBuddha-AvatarCreature` into `PeanutBuddha-AvatarCreature-X.X.X.zip`
+2. Run `./packageup.ps1` to copy everything into the plugin directory
 
-3. Release
+3. Compress the plugin directory into `PeanutBuddha-AvatarCreature-X.X.X.zip`
+
+4. Release

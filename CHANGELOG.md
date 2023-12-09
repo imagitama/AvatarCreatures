@@ -1,3 +1,8 @@
+# 0.0.5
+
+- if no assetbundle is found, fall back to a custom `default.assetbundle` then the game default
+- if no chest bone is found, fall back to spine
+
 # 0.0.4
 
 - fix bug where you must have a `0.assetbundle` or else it fails to load
