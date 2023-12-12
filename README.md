@@ -2,6 +2,8 @@
 
 **YouTube guide for converting a VRC avatar into the mod: https://www.youtube.com/watch?v=FCsUxyJM4yo**
 
+**Your avatar is only visible to other people - it does not replace your own hands and is not compatible with 3rd person mod**
+
 A Lethal Company mod that lets you load custom avatars for players in your lobby.
 
 Each player must have the AssetBundle for each player to see them properly:
