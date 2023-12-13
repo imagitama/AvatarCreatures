@@ -6,6 +6,8 @@
 
 A Lethal Company mod that lets you load custom avatars for players in your lobby.
 
+**You only see other people's avatars not your own.** If you know how to hide the default hands please open an issue in my GitHub repo.
+
 Each player must have the AssetBundle for each player to see them properly:
 
 1. Use the Unity plugin to generate an AssetBundle for your own avatar in your `steamapps/common/Lethal Company/Avatars` folder
@@ -13,6 +15,12 @@ Each player must have the AssetBundle for each player to see them properly:
 3. Run the mod and you should see them
 
 Forked from DarnHyena's [LethalCreatures mod](https://github.com/DarnHyena/LethalCreatures)
+
+## 3rd person mods
+
+This mod is not compatible with 3rd person mods.
+
+You _can_ look at a broken version of yourself with 3rd person mods and enabling setting `AlwaysRenderLocalPlayerModel` and restarting the game.
 
 ## Development
 

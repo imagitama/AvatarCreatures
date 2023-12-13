@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace CreatureModels
+namespace AvatarCreatures
 {
     public class IKController : MonoBehaviour
     {

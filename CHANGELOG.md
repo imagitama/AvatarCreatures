@@ -1,3 +1,7 @@
+# 0.0.6
+
+- added config to enable your model in (broken) 3rd person for testing
+
 # 0.0.5
 
 - if no assetbundle is found, fall back to a custom `default.assetbundle` then the game default

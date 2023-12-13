@@ -1,8 +1,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.33027.164
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34322.80
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreatureModels", "CreatureModels.csproj", "{401C49C2-A636-412E-9411-B9117C28B455}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AvatarCreatures", "AvatarCreatures.csproj", "{401C49C2-A636-412E-9411-B9117C28B455}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,6 +1,6 @@
 {
   "name": "AvatarCreatures",
-  "version_number": "0.0.5",
+  "version_number": "0.0.6",
   "website_url": "https://github.com/imagitama/AvatarCreatures",
   "description": "Load custom avatars for players in your lobby.",
   "dependencies": ["BepInEx-BepInExPack-5.4.2100", "2018-LC_API-2.1.1"]

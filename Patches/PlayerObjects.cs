@@ -1,9 +1,9 @@
 using GameNetcodeStuff;
 using HarmonyLib;
 using UnityEngine;
-using static CreatureModels.AvatarCreature;
+using static AvatarCreatures.AvatarCreature;
 
-namespace CreatureModels.Patches
+namespace AvatarCreatures.Patches
 {
     [HarmonyPatch]
     internal class PlayerObjects
@@ -15,8 +15,9 @@ namespace CreatureModels.Patches
 
             // dev only flag for forcing the player's local model
             // note if set to false the game will render the default model AND the custom one in 1st person mode
-            // TODO: Work out how to make this a mod setting (does Thunderstore have this?)
-            bool alwaysRenderLocalPlayerModel = false;
+            bool alwaysRenderLocalPlayerModel = Plugin.configAlwaysRenderLocalPlayerModel.Value;
+
+            Debug.Log($"Always render local player model: {(alwaysRenderLocalPlayerModel ? "Yes" : "No")}");
 
             foreach (var player in players)
             {
@@ -34,7 +35,7 @@ namespace CreatureModels.Patches
                         continue;
                     }
 
-                    Debug.Log($"Adding creature to steam ID {player.playerSteamId}");
+                    Debug.Log($"Adding creature to steam ID {player.playerSteamId}...");
 
                     player.gameObject.AddComponent<CreatureController>();
                 }

@@ -2,30 +2,48 @@ using GameNetcodeStuff;
 using UnityEngine.Rendering.HighDefinition;
 using UnityEngine;
 using System.IO;
-using BepInEx;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using static UnityEngine.UIElements.UIR.Allocator2D;
-using static UnityEngine.UIElements.UxmlAttributeDescription;
-using UnityEngine.Profiling;
+using System.Linq;
 
-namespace CreatureModels
+namespace AvatarCreatures
 {
     public class AvatarCreature
     {
         public class CreatureController : MonoBehaviour
         {
+            bool isLocalPlayer = false;
             GameObject currentAvatar = null;
             Transform spineBoneForRotation = null;
             Transform chestBone = null;
+            Camera thirdPersonCamera = null;
+            MonoBehaviour thirdPersonComponent = null;
+            ulong LOCAL_STEAM_ID = 0;
+            bool oldValue = false;
 
             void Start()
             {
                 var playerController = gameObject.GetComponent<PlayerControllerB>();
 
-                // seems to be 0 when local
+                // 0 when local
                 var steamId = playerController.playerSteamId;
+
+                if (playerController.IsLocalPlayer)
+                {
+                    isLocalPlayer = true;
+                }
+
+                Debug.Log($"Checking for third person mod...");
+
+                GameObject foundObject = GameObject.Find("3rdPerson");
+
+                if (foundObject != null)
+                {
+                    thirdPersonComponent = foundObject.GetComponents<MonoBehaviour>().ElementAt(2);
+                }
+
+                bool isThirdPersonModEnabled = thirdPersonComponent != null;
+
+                Debug.Log($"Third person mod is: {(isThirdPersonModEnabled ? "Enabled": "Not Found")}");
 
                 Debug.Log($"Loading model for player '{steamId}'...");
 
@@ -59,12 +77,7 @@ namespace CreatureModels
                     throw new Exception("ScavengerModel is missing a spine bone");
                 }
 
-                gameObject.GetComponentInChildren<LODGroup>().enabled = false;
-                var meshes = gameObject.GetComponentsInChildren<SkinnedMeshRenderer>();
-                foreach (var LODmesh in meshes)
-                {
-                    LODmesh.enabled = false;
-                }
+                HideDefaultCreature();
 
                 GameObject modelFbx = assetBundle.LoadAsset<GameObject>("model.fbx");
 
@@ -235,10 +248,19 @@ namespace CreatureModels
                 if (currentAvatar != null && chestBone != null && spineBoneForRotation != null)
                 {
                     currentAvatar.transform.localPosition = new Vector3(0, -0.15f, 0);
-                    // currentAvatar.transform.Find("Armature").Find("Hips").Find("Spine").Find("Chest").localEulerAngles = trans.localEulerAngles;
                     chestBone.localEulerAngles = spineBoneForRotation.localEulerAngles;
                 }
 
+            }
+
+            void HideDefaultCreature()
+            {
+                gameObject.GetComponentInChildren<LODGroup>().enabled = false;
+                var meshes = gameObject.GetComponentsInChildren<SkinnedMeshRenderer>();
+                foreach (var LODmesh in meshes)
+                {
+                    LODmesh.enabled = false;
+                }
             }
         }
     }
