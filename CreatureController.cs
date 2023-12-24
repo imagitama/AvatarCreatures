@@ -22,6 +22,11 @@ namespace AvatarCreatures
 
             void Start()
             {
+                CheckAvatars();
+            }
+
+            public void CheckAvatars()
+            {
                 var playerController = gameObject.GetComponent<PlayerControllerB>();
 
                 // 0 when local
@@ -43,7 +48,7 @@ namespace AvatarCreatures
 
                 bool isThirdPersonModEnabled = thirdPersonComponent != null;
 
-                Debug.Log($"Third person mod is: {(isThirdPersonModEnabled ? "Enabled": "Not Found")}");
+                Debug.Log($"Third person mod is: {(isThirdPersonModEnabled ? "Enabled" : "Not Found")}");
 
                 Debug.Log($"Loading model for player '{steamId}'...");
 
@@ -149,7 +154,11 @@ namespace AvatarCreatures
 
                         if (albedoTexture == null)
                         {
-                            throw new Exception($"Could not find asset '{albedoName}' in asset bundle");
+                            Debug.LogWarning($"Could not find asset '{albedoName}' in asset bundle and no backup texture was set.");
+
+                            idx++;
+
+                            continue;
                         }
 
                         material.SetTexture("_BaseColorMap", albedoTexture);
@@ -159,7 +168,8 @@ namespace AvatarCreatures
                         material.SetTexture("_BumpMap", normalTexture);
 
                         // trust the user made their eyes only have emission
-                        if (emissionTexture != null) {
+                        if (emissionTexture != null)
+                        {
                             material.SetColor("_EmissiveColor", Color.white);
                         }
 
