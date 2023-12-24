@@ -50,9 +50,18 @@ namespace AvatarCreatures.Patches
             InitModels();
         }
 
+        // Make it so when a player get's close enough to the local player
+        // their model gets replaced.
+        [HarmonyPatch(typeof(PlayerControllerB), "ShowNameBillboard")]
+        [HarmonyPostfix]
+        public static void InitModelCrouch(ref PlayerControllerB __instance)
+        {
+            InitModels();
+        }
+
         // Hides the vanilla player
         [HarmonyPatch(typeof(PlayerControllerB), "DisablePlayerModel")]
-        [HarmonyPostfix] 
+        [HarmonyPostfix]
         public static void DisablePlayerModel(ref PlayerControllerB __instance, GameObject playerObject)
         {
             var localPlayer = GameNetworkManager.Instance.localPlayerController;
@@ -76,34 +85,34 @@ namespace AvatarCreatures.Patches
         [HarmonyPrefix]
         static void SwitchSuitForPlayerPatch(PlayerControllerB player, int suitID, bool playAudio = true)
         {
-/*            Texture tex;
-            switch (suitID)
-            {
- *//*               case 0:
-                    tex = LethalCreature.CreatureController.TexBase01;
-                    break;
-                case 1:
-                    tex = LethalCreature.CreatureController.TexBase02;
-                    break;
-                case 2:
-                    tex = LethalCreature.CreatureController.TexBase03;
-                    break;
-                case 3:
-                    tex = LethalCreature.CreatureController.TexBase04;
-                    break;*//*
-                default:
-                    tex = AvatarCreature.CreatureController.albedoTexture;
-                    break;
-            }
+            /*            Texture tex;
+                        switch (suitID)
+                        {
+             *//*               case 0:
+                                tex = LethalCreature.CreatureController.TexBase01;
+                                break;
+                            case 1:
+                                tex = LethalCreature.CreatureController.TexBase02;
+                                break;
+                            case 2:
+                                tex = LethalCreature.CreatureController.TexBase03;
+                                break;
+                            case 3:
+                                tex = LethalCreature.CreatureController.TexBase04;
+                                break;*//*
+                            default:
+                                tex = AvatarCreature.CreatureController.albedoTexture;
+                                break;
+                        }
 
-            SkinnedMeshRenderer[] meshes = player.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>();
+                        SkinnedMeshRenderer[] meshes = player.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>();
 
-            Debug.Log("Looking for meshes...");
-            foreach (SkinnedMeshRenderer mesh in meshes)
-            {
-                Debug.Log("Found a mesh: " + mesh.name);
-                mesh.materials[0].SetTexture("_BaseColorMap", tex);
-            }*/
+                        Debug.Log("Looking for meshes...");
+                        foreach (SkinnedMeshRenderer mesh in meshes)
+                        {
+                            Debug.Log("Found a mesh: " + mesh.name);
+                            mesh.materials[0].SetTexture("_BaseColorMap", tex);
+                        }*/
         }
     }
 
